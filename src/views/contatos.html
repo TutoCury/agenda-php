@@ -1,0 +1,113 @@
+<?php
+$params = $this->getParams();
+$contatos = $params['contatos'];
+?>
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Agenda Telefônica</title>
+
+        <!-- Bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+
+        <style>
+            body {
+                padding-top: 50px;
+            }
+            .starter-template {
+                padding: 40px 15px;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" 
+                            data-toggle="collapse" data-target="#navbar" 
+                            aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">Agenda</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="?ctrl=Contato">Contatos</a></li>
+                        <li><a href="?ctrl=Admin">Admin</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+
+        <div class="container">
+
+            <div id="app" class="starter-template">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <tr>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Telefone</th>
+                            <th>Celular</th>
+                            <th colspan="3">
+                                A&ccedil;&otilde;es
+                            </th>
+                        </tr>
+                        <?php foreach ($contatos as $contato) { ?>
+                        <tr class="text-left">
+                            <td>
+                                <?php echo $contato->getNome() ?>
+                            </td>
+                            <td>
+                                <?php echo $contato->getEmail() ?>
+                            </td>
+                            <td>
+                                <?php echo $contato->getTelefone() ?>
+                            </td>
+                            <td>
+                                <?php echo $contato->getCelular() ?>
+                            </td>
+                            <td>
+                                <a href='?ctrl=Contato&id=<?php echo $contato->getId() ?>'>Editar</a>
+                            </td>
+                            <td>
+                                <a onclick="deleteContato(<?php echo $contato->getId() ?>);" href='#'>Apagar</a>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                    </table>
+                    <br />
+                    <a class="btn btn-info" href='?ctrl=Contato&id'>Novo Contato</a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- jQuery (obrigatório para plugins JavaScript do Bootstrap) -->
+        <script src="js/jquery.min.js"></script>
+        <!-- Inclui todos os plugins compilados (abaixo), ou inclua arquivos separadados se necessário -->
+        <script src="js/bootstrap.min.js"></script>
+
+        <script>
+            function deleteContato(id) {
+                $.ajax({
+                    url: '?ctrl=Contato&id=' + id,
+                    type: 'DELETE',
+                    success: function (result) {
+                        $(location).attr('href', '?ctrl=Contato');
+                    }
+                });
+            }
+        </script>
+
+        </body>
+</html>

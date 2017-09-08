@@ -1,0 +1,16 @@
+# docker run -d -p 80:80 --name php-agenda-app -v "$PWD":/var/www/html php:5.6-apache
+version: '2'
+services:
+    agenda-app:
+        container_name: agenda-app
+        build: .
+        external_links:
+            - agenda-db:agenda-db
+        ports:
+            - 80:80
+        volumes:
+            - ../:/var/www/html
+    agenda-db:
+        extends:
+            file: mysql.yml
+            service: agenda-db

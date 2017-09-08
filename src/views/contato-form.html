@@ -1,0 +1,173 @@
+<?php
+$params = $this->getParams();
+$contato = $params['contato'];
+?>
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Agenda Telefônica</title>
+
+        <!-- Bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+
+        <style>
+            body {
+                padding-top: 50px;
+            }
+            .starter-template {
+                padding: 40px 15px;
+                text-align: center;
+            }
+            .error{
+                color:red
+            }
+        </style>
+    </head>
+    <body>
+
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" 
+                            data-toggle="collapse" data-target="#navbar" 
+                            aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">Agenda</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="?ctrl=Contato">Contatos</a></li>
+                        <li><a href="?ctrl=Admin">Admin</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+
+        <div class="container">
+            <div id="app" class="starter-template">
+                <form id="contato-form" method="post" action="#">
+                    <div class="form-group">
+                        <label for="nome">Nome:</label>
+                        <input type='text' class="form-control" id="nome" 
+                               name='nome' value='<?php echo $contato->getNome() ?>'> 
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail:</label>
+                        <input type='email' class="form-control" id="email"
+                               name='email' value='<?php echo $contato->getEmail() ?>'>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Telefone:</label>
+                        <input type='text' class="form-control" id="telefone"
+                               name='telefone' value='<?php echo $contato->getTelefone() ?>'>
+                    </div>
+                    <div class="form-group">
+                        <label for="celular">Celular:</label>
+                        <input type='text' class="form-control" id="celular"
+                               name='celular' value='<?php echo $contato->getCelular() ?>'>
+                    </div>
+
+                    <div id="show-errors" class="form-group error"></div>
+
+                    <a href="?ctrl=Contato" 
+                       class="btn btn-default" role="button">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+
+                    <input type='hidden' name='id' value='<?php echo $contato->getId() ?>'>
+                </form>
+            </div>
+        </div>
+
+        <!-- jQuery -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.validate.min.js"></script>
+        <script src="js/jquery.maskedinput.min.js"></script>
+
+        <!-- Bootstrap -->
+        <script src="js/bootstrap.min.js"></script>
+
+        <!--Validações e máscaras dos campos-->
+        <script>
+            $(document).ready(function () {
+                $("#telefone").mask("(99) 9999-9999");
+                $("#celular").mask("(99) 9 999?9-9999");
+
+                $('#contato-form').validate({
+                    rules: {
+                        nome: {
+                            required: true,
+                            maxlength: 200
+                        },
+                        email: {
+                            required: false,
+                            email: true
+                        },
+                        telefone: {
+                            required: true
+                        },
+                        celular: {
+                            required: true
+                        }
+                    },
+                    messages: {
+                        nome: {
+                            required: "O nome é obrigatório",
+                            maxlength: "O nome não pode ter mais de 200 caracteres"
+                        },
+                        email: {
+                            required: "O e-mail é obrigatório",
+                            email: "Endereço de e-mail inválido"
+                        },
+                        telefone: {
+                            required: "O telefone é obrigatório"
+                        },
+                        celular: {
+                            required: "O celular é obrigatório"
+                        }
+                    },
+                    highlight: function (element) {
+                        $(element).closest('.form-group')
+                                .removeClass('success').addClass('error');
+                    },
+                    success: function (element) {
+                        element.addClass('valid').closest('.form-group')
+                                .removeClass('error').addClass('success');
+                    }
+                });
+
+                var frm = $('#contato-form');
+                frm.submit(function (e) {
+                    e.preventDefault();
+
+                    var contatoId = parseInt("<?php echo $contato->getId() ?>");
+                    if (frm.valid()) {
+                        var method = (isNaN(contatoId)) ? 'POST' : 'PUT';
+                        $.ajax({
+                            type: method,
+                            url: frm.attr('action'),
+                            data: frm.serialize(),
+                            success: function (data) {
+                                $(location).attr('href', '?ctrl=Contato');
+                            },
+                            error: function (data) {
+                                $('#show-errors').html("");
+                                var errors = JSON.parse(data.responseText);
+                                $.each(errors, function (idx, val) {
+                                    $('#show-errors').append(val + "<br/>");
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

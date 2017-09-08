@@ -1,0 +1,122 @@
+<?php
+$params = $this->getParams();
+$total = $params['total'];
+?>
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Agenda Telefônica</title>
+
+        <!-- Bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+
+        <style>
+            body {
+                padding-top: 50px;
+            }
+            .starter-template {
+                padding: 40px 15px;
+                text-align: center;
+            }
+            .hero-widget { text-align: center; padding-top: 20px; padding-bottom: 20px; }
+            .hero-widget .icon { display: block; font-size: 80px; line-height: 80px; margin-bottom: 10px; text-align: center; }
+            .hero-widget var { display: block; height: 50px; font-size: 50px; line-height: 50px; font-style: normal; }
+            .hero-widget label { font-size: 17px; }
+            .hero-widget .options { margin-top: 10px; }
+        </style>
+    </head>
+    <body>
+
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" 
+                            data-toggle="collapse" data-target="#navbar" 
+                            aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">Agenda</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="?ctrl=Contato">Contatos</a></li>
+                        <li><a href="?ctrl=Admin">Admin</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+
+        <div class="container">
+
+            <div id="app" class="starter-template">
+
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="hero-widget well well-sm col-md-4">
+                        <div class="icon">
+                            <i class="glyphicon glyphicon-user"></i>
+                        </div>
+                        <div class="text">
+                            <label class="text-muted">Total de contatos:</label>
+                            <var><?php echo $total; ?></var>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <span>Telefones por código de região</span>
+                    <canvas id="telbycode" width="200" height="100"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- jQuery -->
+        <script src="js/jquery.min.js"></script>
+        <!-- Bootstrap -->
+        <script src="js/bootstrap.min.js"></script>
+        <!-- ChartJs -->
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>-->
+        <script src="js/Chart.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                // Buscar os dados por ajax
+                $.get("?ctrl=Contato&total", function (result) {
+                    var data = JSON.parse(result);
+
+                    var ctx = $("#telbycode").get(0).getContext('2d');
+                    var data = {
+                        datasets: [
+                            {
+                                data: data.totais,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ]
+                            }
+                        ],
+                        labels: data.codigos
+                    };
+
+                    var myPieChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: data
+                    });
+                });
+            });
+        </script>
+
+    </body>
+</html>
