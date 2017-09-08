@@ -38,26 +38,7 @@ class Application {
             $classObj = new $class($this->method);
         } else {
             throw new Exception("Classe '$class' nao existe no arquivo '$controller_file'");
-        }
-        
-//        switch ($this->method) {
-//            case "GET":
-//                echo "Chama método que lista as parada em " . $class;
-//                break;
-//            case "POST":
-//                echo "Chama método que cria um novo bagulho em " . $class;
-//                break;
-//            case "PUT":
-//                echo "Chama método que atualiza o bagulho em " . $class;
-//                break;
-//            case "DELETE":
-//                echo "Chamar método que deleta o bagulho em em " . $class;
-//                break;
-//            default:
-//                http_response_code(400);
-//                throw new Exception("Metodo http '$this->method' não permitido");
-//        }
-        
+        }        
     }
 
     static function redirect($uri) {
